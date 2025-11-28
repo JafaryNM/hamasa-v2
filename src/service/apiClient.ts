@@ -16,4 +16,18 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Handle 401 errors globally
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Remove invalid token
+      localStorage.removeItem("access");
+      localStorage.removeItem("refresh");
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 export default apiClient;
