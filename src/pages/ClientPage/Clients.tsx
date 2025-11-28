@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { toast } from "sonner";
 import { Input } from "../../components/ui/input";
-import { TbPlus, TbSearch, TbTrash } from "react-icons/tb";
+import { TbEdit, TbPlus, TbSearch, TbTrash } from "react-icons/tb";
 
 import {
   Dialog,
@@ -123,8 +123,54 @@ export default function Clients() {
   };
 
   // SUBMIT FORM
+  // const onSubmit = (values: ClientType) => {
+  //   const payload = { ...values, role: "org_admin" as ClientType["role"] };
+
+  //   if (editingRecord) {
+  //     updateClient.mutate(
+  //       { id: editingRecord.id!, data: payload },
+  //       {
+  //         onSuccess: () => {
+  //           toast.success("Client updated successfully");
+  //           setIsModalOpen(false);
+  //         },
+  //         onError: (err: any) =>
+  //           toast.error(
+  //             err?.response?.data?.detail || "Failed to update client"
+  //           ),
+  //       }
+  //     );
+  //   } else {
+  //     addClient.mutate(payload, {
+  //       onSuccess: () => {
+  //         toast.success("Client created successfully");
+  //         setIsModalOpen(false);
+  //       },
+  //       onError: (err: any) =>
+  //         toast.error(err?.response?.data?.detail || "Failed to create client"),
+  //     });
+  //   }
+  // };
+
   const onSubmit = (values: ClientType) => {
-    const payload = { ...values, role: "org_admin" as ClientType["role"] };
+    console.log("SUBMITTED VALUES:", values);
+    console.log("EDITING RECORD:", editingRecord);
+    let payload: ClientType;
+
+    if (editingRecord) {
+      // UPDATE MODE: Keep existing role
+      payload = {
+        ...editingRecord, // keep all existing fields
+        ...values, // override with edited fields
+        role: editingRecord.role, // keep the original role
+      };
+    } else {
+      // CREATE MODE: always org_admin
+      payload = {
+        ...values,
+        role: "org_admin",
+      };
+    }
 
     if (editingRecord) {
       updateClient.mutate(
@@ -172,7 +218,7 @@ export default function Clients() {
         const record = row.original;
         return (
           <div className="flex gap-3">
-            <TbPlus
+            <TbEdit
               className="cursor-pointer text-blue-500"
               onClick={() => openEditModal(record)}
             />
@@ -322,7 +368,6 @@ export default function Clients() {
                 <DialogFooter>
                   <Button
                     type="submit"
-                    className="w-full"
                     disabled={addClient.isPending || updateClient.isPending}
                   >
                     {addClient.isPending || updateClient.isPending ? (
