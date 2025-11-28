@@ -1,7 +1,4 @@
-"use client";
-
 import {
-  ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,

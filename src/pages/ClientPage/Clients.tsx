@@ -124,11 +124,11 @@ export default function Clients() {
 
   // SUBMIT FORM
   const onSubmit = (values: ClientType) => {
-    const payload = { ...values, role: "org_admin" };
+    const payload = { ...values, role: "org_admin" as ClientType["role"] };
 
     if (editingRecord) {
       updateClient.mutate(
-        { id: editingRecord.id, data: payload },
+        { id: editingRecord.id!, data: payload },
         {
           onSuccess: () => {
             toast.success("Client updated successfully");

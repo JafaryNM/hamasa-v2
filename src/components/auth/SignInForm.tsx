@@ -7,6 +7,8 @@ import { useSign } from "../../hooks/useSign";
 import { Input } from "../ui/input";
 import { SignInSchemaType } from "../../Schema/SignSchema";
 import { Button } from "../ui/button";
+import { useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export default function SignInForm() {
   const navigate = useNavigate();
@@ -103,6 +105,7 @@ export default function SignInForm() {
               </div>
 
               {/* Password */}
+              {/* Password */}
               <div>
                 <label className="block mb-1 font-medium">Password</label>
 
@@ -110,14 +113,33 @@ export default function SignInForm() {
                   name="password"
                   control={control}
                   rules={{ required: "Password is required" }}
-                  render={({ field }) => (
-                    <Input
-                      {...field}
-                      type="password"
-                      placeholder="Enter your password"
-                      className={errors.password ? "border-red-500" : ""}
-                    />
-                  )}
+                  render={({ field }) => {
+                    const [showPassword, setShowPassword] = useState(false);
+
+                    return (
+                      <div className="relative">
+                        <Input
+                          {...field}
+                          type={showPassword ? "text" : "password"}
+                          placeholder="Enter your password"
+                          className={errors.password ? "border-red-500" : ""}
+                        />
+
+                        {/* Eye Toggle Button */}
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword((prev) => !prev)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                        >
+                          {showPassword ? (
+                            <AiOutlineEyeInvisible size={20} />
+                          ) : (
+                            <AiOutlineEye size={20} />
+                          )}
+                        </button>
+                      </div>
+                    );
+                  }}
                 />
 
                 {errors.password && (
