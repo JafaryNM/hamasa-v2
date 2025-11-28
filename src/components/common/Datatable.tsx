@@ -39,7 +39,10 @@ export function DataTable<TData, TValue>({
         <Table>
           <TableHeader className="bg-brand-600">
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow
+                key={headerGroup.id}
+                className="hover:bg-brand-500 hover:text-white"
+              >
                 {headerGroup.headers.map((header) => (
                   <TableHead key={header.id} className="text-white">
                     {header.isPlaceholder
@@ -92,7 +95,7 @@ export function DataTable<TData, TValue>({
                     <img
                       src="/images/logo/folder.png"
                       alt="No results"
-                      className="w-10 h-10 object-contain opacity-70"
+                      className="w-15 h-15 object-contain opacity-70"
                     />
                     <p className="mt-2 text-gray-500">No results found.</p>
                   </div>

@@ -122,6 +122,8 @@ export default function Clients() {
     });
   };
 
+  // Apply search
+
   // SUBMIT FORM
   // const onSubmit = (values: ClientType) => {
   //   const payload = { ...values, role: "org_admin" as ClientType["role"] };
@@ -250,8 +252,23 @@ export default function Clients() {
           <Input
             placeholder="Search name..."
             value={nameInput}
-            onChange={(e) => setNameInput(e.target.value)}
+            onChange={(e) => {
+              setNameInput(e.target.value);
+
+              // IF user deletes everything → auto-reset filter
+              if (e.target.value.trim() === "") {
+                setNameFilter(""); // remove filter
+                setPage(1);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                applySearch(); // run search when pressing Enter
+              }
+            }}
           />
+
           <Button variant="secondary" onClick={applySearch}>
             <TbSearch className="mr-2" /> Search
           </Button>
