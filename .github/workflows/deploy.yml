@@ -33,6 +33,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "dist/*"
           target: "/var/www/hamasa-v2/dist"
+          overwrite: trues
 
       # Restart NGINX after deployment
       - name: Restart NGINX
