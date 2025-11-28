@@ -23,8 +23,7 @@ export const useAddClient = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: Partial<Client>) =>
-      clientService.create(payload, "/clients"), // POST /clients/
+    mutationFn: (payload: Partial<Client>) => clientService.create(payload), // POST /clients/
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["clients"] });

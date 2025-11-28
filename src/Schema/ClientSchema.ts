@@ -15,7 +15,7 @@ export const ClientSchema = z.object({
   email: z.string().email("Invalid email address"),
   name_of_organisation: z.string().min(1, "Organisation is required"),
   country: z.string().min(1, "Country is required"),
-  role: UserRoleEnum,
+  role: UserRoleEnum.optional(),
 });
 
 export type ClientType = z.infer<typeof ClientSchema>;
