@@ -1,3 +1,4 @@
 import { createService } from "./apiService";
 
-export default createService("/auth");
+const authService = createService("auth");
+export default authService;

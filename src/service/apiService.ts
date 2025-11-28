@@ -1,45 +1,46 @@
 import apiClient from "./apiClient";
 
 export const createService = (endpoint: string) => {
-  const buildUrl = (extendedUrl = "", id?: string | number) =>
-    id ? `${endpoint}${extendedUrl}/${id}/` : `${endpoint}${extendedUrl}/`;
+  const normalize = (url: string) => (url.startsWith("/") ? url : `/${url}`);
 
-  // LIST
-  const list = <T>(params?: unknown, extendedUrl = "") => {
-    const controller = new AbortController();
-    const request = apiClient.get<T>(buildUrl(extendedUrl), {
-      signal: controller.signal,
-      params,
-    });
-    return { request, cancel: () => controller.abort() };
+  const buildUrl = (extendedUrl = "", id?: string | number) => {
+    const base = normalize(endpoint); // → "/auth"
+    const extra = normalize(extendedUrl); // → "/login"
+    const full = id ? `${base}${extra}/${id}` : `${base}${extra}`;
+    return full;
   };
-
-  // SHOW SINGLE
-  const show = (id: string | number, extendedUrl = "") => {
-    const controller = new AbortController();
-    const request = apiClient.get(buildUrl(extendedUrl, id), {
-      signal: controller.signal,
-    });
-    return { request, cancel: () => controller.abort() };
-  };
-
-  // CREATE (POST)
-  const create = <T>(payload: T, extendedUrl = "") =>
-    apiClient.post(buildUrl(extendedUrl), payload);
-
-  // UPDATE (PATCH)
-  const update = <T>(id: string | number, payload: T, extendedUrl = "") =>
-    apiClient.patch(buildUrl(extendedUrl, id), payload);
-
-  // DELETE
-  const remove = (id: string | number, extendedUrl = "") =>
-    apiClient.delete(buildUrl(extendedUrl, id));
 
   return {
-    list,
-    show,
-    create,
-    update,
-    delete: remove,
+    list: <T>(params?: unknown, extendedUrl = "") => {
+      const controller = new AbortController();
+      const url = buildUrl(extendedUrl);
+
+      const request = apiClient.get<T>(url, {
+        params,
+        signal: controller.signal,
+      });
+
+      return { request, cancel: () => controller.abort() };
+    },
+
+    show: (id: string | number, extendedUrl = "") => {
+      const controller = new AbortController();
+      const url = buildUrl(extendedUrl, id);
+
+      const request = apiClient.get(url, {
+        signal: controller.signal,
+      });
+
+      return { request, cancel: () => controller.abort() };
+    },
+
+    create: <T>(payload: T, extendedUrl = "") =>
+      apiClient.post(buildUrl(extendedUrl), payload),
+
+    update: <T>(id: string | number, payload: T, extendedUrl = "") =>
+      apiClient.patch(buildUrl(extendedUrl, id), payload),
+
+    delete: (id: string | number, extendedUrl = "") =>
+      apiClient.delete(buildUrl(extendedUrl, id)),
   };
 };

@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "http://13.48.124.122/hamasa-api/v1/",
+  baseURL: "http://13.48.124.122/api/hamasa-api/v1/",
+  // baseURL: "http://test.com:8000",
 });
 
 apiClient.interceptors.request.use(

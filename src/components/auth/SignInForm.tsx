@@ -25,6 +25,7 @@ export default function SignInForm() {
   const { mutate: signIn, isPending } = useSign();
 
   const onSubmit = (data: SignInSchemaType) => {
+    console.log("Submitting data:", data);
     signIn(data, {
       onSuccess: (response) => {
         toast.success("Login Successful!", {
