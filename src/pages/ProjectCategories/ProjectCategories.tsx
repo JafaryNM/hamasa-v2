@@ -46,7 +46,7 @@ export default function ProjectCategories() {
     page_size: 10,
     name: nameFilter || null,
     country: null,
-    sort: "asc",
+    sort: "desc",
   });
 
   const addProjectCategory = useAddProjectCategory();

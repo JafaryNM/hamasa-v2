@@ -47,7 +47,7 @@ export default function MediaCategories() {
     page_size: 10,
     name: nameFilter || null,
     country: null,
-    sort: "asc",
+    sort: "desc",
   });
 
   const addMediaCategory = useAddMediaCategory();
