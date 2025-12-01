@@ -30,7 +30,7 @@ export const useAddProjectCategory = () => {
 export const useShowProjectCategory = (id: string | number, enabled = true) => {
   return useQuery({
     queryKey: ["project-categories", id],
-    enabled: !!id && enabled, 
+    enabled: !!id && enabled,
     queryFn: async () => {
       const { request } = projectCategoryService.show(id);
       const res = await request;
@@ -44,7 +44,7 @@ export const useUpdateProjectCategory = () => {
 
   return useMutation({
     mutationFn: (payload: { id: string; data: Partial<ProjectCategory> }) =>
-      projectCategoryService.update(payload.id, payload.data), 
+      projectCategoryService.update(payload.id, payload.data),
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["project-categories"] });
@@ -52,7 +52,6 @@ export const useUpdateProjectCategory = () => {
   });
 };
 
-]
 export const useDeleteProjectCategory = () => {
   const queryClient = useQueryClient();
 

@@ -7,6 +7,7 @@ import Home from "./pages/Dashboard/Home";
 import NotFound from "./pages/OtherPage/NotFound";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import Clients from "./pages/ClientPage/Clients";
+import ProjectCategories from "./pages/ProjectCategories/ProjectCategories";
 
 export default function App() {
   return (
@@ -22,6 +23,11 @@ export default function App() {
                 index
                 path="/system/system-clients"
                 element={<Clients />}
+              />
+              <Route
+                index
+                path="/system/system-project-categories"
+                element={<ProjectCategories />}
               />
             </Route>
           </Route>
