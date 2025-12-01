@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Client, PaginatedResponse, ProjectCategory } from "../types";
+import { PaginatedResponse, ProjectCategory } from "../types";
 import projectCategoryService from "../service/projectCategoryService";
 
 export const useProjectCategories = (params: Record<string, any>) => {
