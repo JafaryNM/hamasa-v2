@@ -50,3 +50,18 @@ export interface ProjectCategory {
   created_at: string;
   updated_at: string;
 }
+export interface MediaCategory {
+  id: string;
+  name: string;
+  description?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface MediaCategory {
+  id: string;
+  name: string;
+  description?: string | null;
+  created_at: string;
+  updated_at: string;
+}

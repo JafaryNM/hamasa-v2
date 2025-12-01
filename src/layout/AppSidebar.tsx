@@ -59,7 +59,7 @@ const othersItems: NavItem[] = [
       },
       {
         name: "Media Sources",
-        path: "/system/system-medias",
+        path: "/system/system-media-categories",
         pro: false,
       },
     ],
