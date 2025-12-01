@@ -23,25 +23,26 @@ import {
 } from "../../components/ui/form";
 import { Card } from "../../components/ui/card";
 import { DataTable } from "../../components/common/Datatable";
-import { ProjectCategory } from "../../types";
-import {
-  useAddProjectCategory,
-  useDeleteProjectCategory,
-  useProjectCategories,
-  useUpdateProjectCategory,
-} from "../../hooks/useCategoryProjects";
+import { MediaCategory } from "../../types";
+
 import {
   ProjectCategorySchema,
   ProjectCategoryType,
 } from "../../Schema/ProjectCategorySchema";
 import { Textarea } from "../../components/ui/textarea";
+import {
+  useAddMediaCategory,
+  useDeleteMediaCategory,
+  useMediaCategories,
+  useUpdateMediaCategory,
+} from "../../hooks/useMediaCategories";
 
-export default function ProjectCategories() {
+export default function MediaCategories() {
   const [page, setPage] = useState(1);
   const [nameInput, setNameInput] = useState("");
   const [nameFilter, setNameFilter] = useState("");
 
-  const { data, isLoading } = useProjectCategories({
+  const { data, isLoading } = useMediaCategories({
     page,
     page_size: 10,
     name: nameFilter || null,
@@ -49,17 +50,17 @@ export default function ProjectCategories() {
     sort: "desc",
   });
 
-  const addProjectCategory = useAddProjectCategory();
-  const updateProjectCategory = useUpdateProjectCategory();
-  const deleteProjectCategory = useDeleteProjectCategory();
+  const addMediaCategory = useAddMediaCategory();
+  const updateMediaCategory = useUpdateMediaCategory();
+  const deleteMediaCategory = useDeleteMediaCategory();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<ProjectCategory | null>(
+  const [editingRecord, setEditingRecord] = useState<MediaCategory | null>(
     null
   );
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const [recordToDelete, setRecordToDelete] = useState<ProjectCategory | null>(
+  const [recordToDelete, setRecordToDelete] = useState<MediaCategory | null>(
     null
   );
 
@@ -71,7 +72,7 @@ export default function ProjectCategories() {
   const { handleSubmit, control, reset } = form;
 
   const clients =
-    data?.results?.map((client: ProjectCategory, index: number) => ({
+    data?.results?.map((client: MediaCategory, index: number) => ({
       ...client,
       sn: index + 1 + (page - 1) * 10,
     })) || [];
@@ -87,13 +88,13 @@ export default function ProjectCategories() {
     setIsModalOpen(true);
   };
 
-  const openEditModal = (record: ProjectCategory) => {
+  const openEditModal = (record: MediaCategory) => {
     reset({ name: record.name || "", description: record.description || "" });
     setEditingRecord(record);
     setIsModalOpen(true);
   };
 
-  const confirmDelete = (record: ProjectCategory) => {
+  const confirmDelete = (record: MediaCategory) => {
     setRecordToDelete(record);
     setIsDeleteOpen(true);
   };
@@ -101,9 +102,9 @@ export default function ProjectCategories() {
   const handleConfirmDelete = () => {
     if (!recordToDelete?.id) return;
 
-    deleteProjectCategory.mutate(recordToDelete.id, {
+    deleteMediaCategory.mutate(recordToDelete.id, {
       onSuccess: () => {
-        toast.success("Project category deleted successfully");
+        toast.success("Media category deleted successfully");
         setIsDeleteOpen(false);
       },
       onError: (err: any) => {
@@ -116,28 +117,28 @@ export default function ProjectCategories() {
 
   const onSubmit = (values: ProjectCategoryType) => {
     if (editingRecord) {
-      updateProjectCategory.mutate(
+      updateMediaCategory.mutate(
         { id: editingRecord.id!, data: values },
         {
           onSuccess: () => {
-            toast.success("Project category updated successfully");
+            toast.success("Media category updated successfully");
             setIsModalOpen(false);
           },
           onError: (err: any) =>
             toast.error(
-              err?.response?.data?.detail || "Failed to update project category"
+              err?.response?.data?.detail || "Failed to update media category"
             ),
         }
       );
     } else {
-      addProjectCategory.mutate(values, {
+      addMediaCategory.mutate(values, {
         onSuccess: () => {
-          toast.success("Project category created successfully");
+          toast.success("Media category created successfully");
           setIsModalOpen(false);
         },
         onError: (err: any) =>
           toast.error(
-            err?.response?.data?.detail || "Failed to create project category"
+            err?.response?.data?.detail || "Failed to create media category"
           ),
       });
     }
@@ -173,9 +174,9 @@ export default function ProjectCategories() {
     <>
       <Card className="p-6 space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold">All Project Categories</h2>
+          <h2 className="text-xl font-semibold">All Media Categories</h2>
           <Button onClick={openCreateModal}>
-            <TbPlus className="mr-2" /> Add Project Category
+            <TbPlus className="mr-2" /> Add Media Category
           </Button>
         </div>
 
@@ -262,12 +263,12 @@ export default function ProjectCategories() {
                   <Button
                     type="submit"
                     disabled={
-                      addProjectCategory.isPending ||
-                      updateProjectCategory.isPending
+                      addMediaCategory.isPending ||
+                      updateMediaCategory.isPending
                     }
                   >
-                    {addProjectCategory.isPending ||
-                    updateProjectCategory.isPending ? (
+                    {addMediaCategory.isPending ||
+                    updateMediaCategory.isPending ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         {editingRecord ? "Updating..." : "Creating..."}
@@ -299,7 +300,7 @@ export default function ProjectCategories() {
               <Button
                 variant="secondary"
                 onClick={() => setIsDeleteOpen(false)}
-                disabled={deleteProjectCategory.isPending}
+                disabled={deleteMediaCategory.isPending}
               >
                 Cancel
               </Button>
@@ -307,9 +308,9 @@ export default function ProjectCategories() {
               <Button
                 variant="destructive"
                 onClick={handleConfirmDelete}
-                disabled={deleteProjectCategory.isPending}
+                disabled={deleteMediaCategory.isPending}
               >
-                {deleteProjectCategory.isPending ? "Deleting..." : "Delete"}
+                {deleteMediaCategory.isPending ? "Deleting..." : "Delete"}
               </Button>
             </DialogFooter>
           </DialogContent>
