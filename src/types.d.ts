@@ -65,3 +65,12 @@ export interface MediaCategory {
   created_at: string;
   updated_at: string;
 }
+
+export interface MediaData {
+  id: string;
+  category_id: string;
+  category_name: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+}
