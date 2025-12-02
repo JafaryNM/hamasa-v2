@@ -8,7 +8,7 @@ import NotFound from "./pages/OtherPage/NotFound";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 import Clients from "./pages/ClientPage/Clients";
 import ProjectCategories from "./pages/ProjectCategories/ProjectCategories";
-import MediaCategories from "./pages/MediaCategoriesPage/MediaCategories";
+import Media from "./pages/MediasPage/Media";
 
 export default function App() {
   return (
@@ -30,11 +30,7 @@ export default function App() {
                 path="/system/system-project-categories"
                 element={<ProjectCategories />}
               />
-              <Route
-                index
-                path="/system/system-media-categories"
-                element={<MediaCategories />}
-              />
+              <Route index path="/system/medias" element={<Media />} />
             </Route>
           </Route>
 
