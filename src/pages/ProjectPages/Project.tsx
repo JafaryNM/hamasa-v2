@@ -1,0 +1,376 @@
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Badge, Loader2 } from "lucide-react";
+import { Button } from "../../components/ui/button";
+import { toast } from "sonner";
+import { Input } from "../../components/ui/input";
+import { TbEye, TbPencil, TbPlus, TbSearch, TbTrash } from "react-icons/tb";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../../components/ui/form";
+import { Card } from "../../components/ui/card";
+import { DataTable } from "../../components/common/Datatable";
+import { MediaData, ProjectType } from "../../types";
+import {
+  useAddMedia,
+  useDeleteMedia,
+  useUpdateMedia,
+} from "../../hooks/useMedias";
+import { MediaSchema, MediaType } from "../../Schema/MediaSchema";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
+import { useProjects } from "../../hooks/useProjects";
+
+export default function Project() {
+  const [page, setPage] = useState(1);
+  const [nameInput, setNameInput] = useState("");
+  const [nameFilter, setNameFilter] = useState("");
+
+  const { data, isLoading } = useProjects({
+    page,
+    page_size: 10,
+    name: nameFilter || null,
+    country: null,
+    sort: "desc",
+  });
+
+  const addMedia = useAddMedia();
+  const updateMedia = useUpdateMedia();
+  const deleteMedia = useDeleteMedia();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingRecord, setEditingRecord] = useState<MediaData | null>(null);
+
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [recordToDelete, setRecordToDelete] = useState<MediaData | null>(null);
+
+  const form = useForm<MediaType>({
+    resolver: zodResolver(MediaSchema),
+    defaultValues: { name: "", category_name: "" },
+  });
+
+  const { handleSubmit, control, reset } = form;
+
+  const MEDIA_CATEGORY_OPTIONS = [
+    { category_name: "Social Media" },
+    { category_name: "Print Media" },
+    { category_name: "TV" },
+    { category_name: "Radio" },
+  ];
+
+  const fields =
+    data?.results?.map((field: ProjectType, index: number) => ({
+      ...field,
+      sn: index + 1 + (page - 1) * 10,
+    })) || [];
+
+  console.log(fields);
+
+  const applySearch = () => {
+    setNameFilter(nameInput);
+    setPage(1);
+  };
+
+  const openCreateModal = () => {
+    reset({ name: "", category_name: "" });
+    setEditingRecord(null);
+    setIsModalOpen(true);
+  };
+
+  const confirmDelete = (record: MediaData) => {
+    setRecordToDelete(record);
+    setIsDeleteOpen(true);
+  };
+
+  const StatusBadge = ({ status }: { status: string }) => {
+    const variant: Record<string, string> = {
+      draft: "bg-gray-400",
+      submitted: "bg-blue-500",
+      review: "bg-yellow-500",
+      in_progress: "bg-orange-500",
+      active: "bg-green-600",
+      completed: "bg-purple-600",
+      archived: "bg-red-500",
+    };
+
+    return (
+      <Badge className={`${variant[status] || "bg-gray-500"} text-white`}>
+        {status.replace("_", " ").toUpperCase()}
+      </Badge>
+    );
+  };
+
+  const handleConfirmDelete = () => {
+    if (!recordToDelete?.id) return;
+
+    deleteMedia.mutate(recordToDelete.id, {
+      onSuccess: () => {
+        toast.success("Project source deleted successfully");
+        setIsDeleteOpen(false);
+      },
+      onError: (err: any) => {
+        toast.error(err?.response?.data?.detail || "Failed to delete project");
+      },
+    });
+  };
+
+  const onSubmit = (values: MediaType) => {
+    if (editingRecord) {
+      updateMedia.mutate(
+        { id: editingRecord.id!, data: values },
+        {
+          onSuccess: () => {
+            toast.success("Project updated successfully");
+            setIsModalOpen(false);
+          },
+          onError: (err: any) =>
+            toast.error(
+              err?.response?.data?.detail || "Failed to update project"
+            ),
+        }
+      );
+    } else {
+      addMedia.mutate(values, {
+        onSuccess: () => {
+          toast.success("Project created successfully");
+          setIsModalOpen(false);
+        },
+        onError: (err: any) =>
+          toast.error(
+            err?.response?.data?.detail || "Failed to create project"
+          ),
+      });
+    }
+  };
+
+  const columns: any = [
+    { accessorKey: "sn", header: "S/N" },
+
+    {
+      accessorKey: "title",
+      header: "Project Title",
+    },
+
+    {
+      accessorKey: "media_sources",
+      header: "Media Sources",
+      cell: ({ row }: any) => {
+        const sources = row.original.media_sources ?? [];
+        const topTwo = sources.slice(0, 2).map((m: any) => m.name);
+        const extra = sources.length > 2 ? ` +${sources.length - 2} more` : "";
+        return topTwo.join(", ") + extra || "None";
+      },
+    },
+
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }: any) => <StatusBadge status={row.original.status} />,
+    },
+
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }: any) => {
+        const project = row.original;
+
+        return (
+          <div className="flex items-center gap-3">
+            <TbEye
+              size={18}
+              className="cursor-pointer text-blue-600 hover:text-blue-800"
+              onClick={() => console.log("VIEW", project)}
+            />
+
+            <TbPencil
+              size={18}
+              className="cursor-pointer text-green-600 hover:text-green-800"
+              onClick={() => console.log("EDIT", project)}
+            />
+
+            <TbTrash
+              size={18}
+              className="cursor-pointer text-red-600 hover:text-red-800"
+              onClick={() => confirmDelete(project)}
+            />
+          </div>
+        );
+      },
+    },
+  ];
+
+  return (
+    <>
+      <Card className="p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold">All Media Source</h2>
+          <Button onClick={openCreateModal}>
+            <TbPlus className="mr-2" /> Add Media Source
+          </Button>
+        </div>
+
+        <div className="flex gap-3 max-w-md">
+          <Input
+            placeholder="Search name..."
+            value={nameInput}
+            onChange={(e) => {
+              setNameInput(e.target.value);
+              if (e.target.value.trim() === "") {
+                setNameFilter("");
+                setPage(1);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                applySearch();
+              }
+            }}
+          />
+
+          <Button variant="secondary" onClick={applySearch}>
+            <TbSearch className="mr-2" /> Search
+          </Button>
+        </div>
+
+        <DataTable
+          columns={columns}
+          data={fields}
+          isLoading={isLoading}
+          page={page}
+          pageSize={10}
+          total={data?.count ?? 0}
+          onPageChange={(p) => setPage(p)}
+        />
+
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogContent className="max-w-lg max-h-[75vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>
+                {editingRecord ? "Update Media Source" : "Create Media Source"}
+              </DialogTitle>
+            </DialogHeader>
+
+            <Form {...form}>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div className="grid grid-cols-1 gap-4">
+                  <FormField
+                    control={control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={control}
+                    name="category_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Media Category</FormLabel>
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {MEDIA_CATEGORY_OPTIONS.map((cat) => (
+                                <SelectItem
+                                  key={cat.category_name}
+                                  value={cat.category_name}
+                                >
+                                  {cat.category_name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <DialogFooter>
+                  <Button
+                    type="submit"
+                    disabled={addMedia.isPending || updateMedia.isPending}
+                  >
+                    {addMedia.isPending || updateMedia.isPending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {editingRecord ? "Updating..." : "Creating..."}
+                      </>
+                    ) : editingRecord ? (
+                      "Update"
+                    ) : (
+                      "Create"
+                    )}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle>Confirm Delete</DialogTitle>
+            </DialogHeader>
+
+            <p className="text-gray-600">
+              Are you sure you want to delete{" "}
+              <strong>{recordToDelete?.name}</strong>?
+            </p>
+
+            <DialogFooter>
+              <Button
+                variant="secondary"
+                onClick={() => setIsDeleteOpen(false)}
+                disabled={deleteMedia.isPending}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                variant="destructive"
+                onClick={handleConfirmDelete}
+                disabled={deleteMedia.isPending}
+              >
+                {deleteMedia.isPending ? "Deleting..." : "Delete"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </Card>
+    </>
+  );
+}

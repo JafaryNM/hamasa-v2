@@ -9,6 +9,7 @@ import ProtectedRoute from "./components/common/ProtectedRoute";
 import Clients from "./pages/ClientPage/Clients";
 import ProjectCategories from "./pages/ProjectCategories/ProjectCategories";
 import Media from "./pages/MediasPage/Media";
+import Project from "./pages/ProjectPages/Project";
 
 export default function App() {
   return (
@@ -20,6 +21,7 @@ export default function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
               <Route index path="/" element={<Home />} />
+              <Route index path="/projects" element={<Project />} />
               <Route
                 index
                 path="/system/system-clients"
