@@ -1,5 +1,4 @@
 import { useForm, Controller } from "react-hook-form";
-
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { useNavigate } from "react-router";
@@ -63,22 +62,22 @@ export default function SignInForm() {
       <div className="flex min-h-screen items-center justify-center px-4">
         <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
           <div>
-            <div className="mb-6 text-center">
-              <div>
-                {/* <img
-                  className="dark:hidden"
-                  src="/images/logo/logo.jpeg"
-                  alt="Logo"
-                  width={40}
-                  height={40}
-                /> */}
-              </div>
+            <div className="text-center">
+              <img
+                className="dark:hidden mx-auto my-10"
+                src="/images/logo/logo.jpeg"
+                alt="Logo"
+                width={151}
+                height={31}
+              />
+
               <h1 className="text-3xl font-bold p-4">Sign In</h1>
               <p className="text-gray-500">Enter your credentials</p>
             </div>
 
+            <div className="mb-6 text-center"></div>
+
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-              {/* Identifier */}
               <div>
                 <label className="block mb-1 font-medium">
                   Email / Username
@@ -104,8 +103,6 @@ export default function SignInForm() {
                 )}
               </div>
 
-              {/* Password */}
-              {/* Password */}
               <div>
                 <label className="block mb-1 font-medium">Password</label>
 
@@ -125,7 +122,6 @@ export default function SignInForm() {
                           className={errors.password ? "border-red-500" : ""}
                         />
 
-                        {/* Eye Toggle Button */}
                         <button
                           type="button"
                           onClick={() => setShowPassword((prev) => !prev)}
@@ -149,7 +145,6 @@ export default function SignInForm() {
                 )}
               </div>
 
-              {/* Submit */}
               <Button type="submit" className="w-full" disabled={isPending}>
                 {isPending ? (
                   <>
