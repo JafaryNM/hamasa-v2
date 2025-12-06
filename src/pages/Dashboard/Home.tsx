@@ -6,21 +6,10 @@ import {
 } from "../../components/ui/card";
 
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../components/ui/table";
-
-import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   BarElement,
-  PointElement,
-  LineElement,
   ArcElement,
   Tooltip,
   Legend,
@@ -28,17 +17,15 @@ import {
   ChartOptions,
 } from "chart.js";
 
-import { Bar, Pie } from "react-chartjs-2";
-import { TbSourceCode, TbABOff } from "react-icons/tb";
-import { User2 } from "lucide-react";
+import { Bar } from "react-chartjs-2";
+import { TbSourceCode, TbWalk, TbAlertCircle } from "react-icons/tb";
+import { CogIcon } from "lucide-react";
 import { useState } from "react";
 
 ChartJS.register(
   CategoryScale,
   LinearScale,
   BarElement,
-  PointElement,
-  LineElement,
   ArcElement,
   Tooltip,
   Legend,
@@ -79,276 +66,225 @@ export default function Home() {
       ? weeklyData
       : monthlyData;
 
-  const monitoringChartData = {
+  const monitoringData = {
     labels: selected.labels,
     datasets: [
       {
         label: "Print Media",
         data: selected.print,
-        backgroundColor: "rgba(79, 70, 229, 0.85)",
-        borderColor: "rgba(79, 70, 229, 1)",
-        borderWidth: 2,
+        backgroundColor: "#4F46E5",
       },
-      {
-        label: "TV",
-        data: selected.tv,
-        backgroundColor: "rgba(16, 185, 129, 0.85)",
-        borderColor: "rgba(16, 185, 129, 1)",
-        borderWidth: 2,
-      },
-      {
-        label: "Radio",
-        data: selected.radio,
-        backgroundColor: "rgba(245, 158, 11, 0.85)",
-        borderColor: "rgba(245, 158, 11, 1)",
-        borderWidth: 2,
-      },
+      { label: "TV", data: selected.tv, backgroundColor: "#10B981" },
+      { label: "Radio", data: selected.radio, backgroundColor: "#F59E0B" },
       {
         label: "Social Media",
         data: selected.social,
-        backgroundColor: "rgba(236, 72, 153, 0.85)",
-        borderColor: "rgba(236, 72, 153, 1)",
-        borderWidth: 2,
+        backgroundColor: "#EC4899",
       },
     ],
   };
-  const monitoringChartOptions = {
+
+  const monitoringOptions: ChartOptions<"bar"> = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "top" as const,
-      },
-    },
-    scales: {
-      x: {
-        stacked: false,
-      },
-      y: {
-        beginAtZero: true,
-        stacked: false,
-      },
-    },
-  } satisfies ChartOptions<"bar">;
-
-  const mediaOutletStats = [
-    { name: "Jamii Forum", value: 120 },
-    { name: "Millard Ayo", value: 94 },
-    { name: "Radio One", value: 75 },
-    { name: "Chanel Ten", value: 60 },
-  ];
-
-  const outletPieData = {
-    labels: mediaOutletStats.map((d) => d.name),
-    datasets: [
-      {
-        label: "Coverage",
-        data: mediaOutletStats.map((d) => d.value),
-        backgroundColor: ["#6366f1", "#10b981", "#f43f5e", "#f59e0b"],
-        borderColor: "#fff",
-        borderWidth: 2,
-      },
-    ],
+    plugins: { legend: { position: "top" } },
+    scales: { y: { beginAtZero: true } },
   };
 
-  const upcomingNews = [
-    { type: "TV", title: "Election Debate Coverage", status: "Pending" },
-    { type: "Radio", title: "Economic Growth Report", status: "In Progress" },
-    { type: "Newspaper", title: "Climate Change Brief", status: "Completed" },
-    { type: "Online", title: "Tech Startup Funding Story", status: "Pending" },
+  const reports = [
+    { tag: "Tawla", text: "Report date 12/10/2025", color: "bg-red-500" },
+    { tag: "WFC", text: "Report date 1/10/2026", color: "bg-green-500" },
+    { tag: "LHRC", text: "Report date 13/11/2025", color: "bg-blue-500" },
+    { tag: "LHRC", text: "Report date 13/11/2025", color: "bg-blue-500" },
   ];
 
   return (
-    <div className="grid grid-cols-12 gap-4 md:gap-6">
-      <Card className="col-span-12 md:col-span-4 rounded-xl hover:shadow-xl transition-all duration-300">
-        <div className="p-5 flex items-center gap-4">
-          <div className="p-3 rounded-xl bg-indigo-600 text-white shadow-md">
+    <div className="grid grid-cols-12 gap-6">
+      <Card className="col-span-3 p-5">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-indigo-600 text-white rounded-xl">
             <TbSourceCode className="w-7 h-7" />
           </div>
           <div>
-            <p className="text-gray-600 text-sm font-medium">Active Sources</p>
-            <p className="text-4xl font-bold">83</p>
+            <p>Total Clients</p>
+            <p className="text-4xl font-bold">100</p>
           </div>
         </div>
       </Card>
 
-      <Card className="col-span-12 md:col-span-4 rounded-xl hover:shadow-xl transition-all duration-300">
-        <div className="p-5 flex items-center gap-4">
-          <div className="p-3 rounded-xl bg-emerald-600 text-white shadow-md">
-            <TbABOff className="w-7 h-7" />
+      <Card className="col-span-3 p-5">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-green-600 text-white rounded-xl">
+            <TbWalk className="w-7 h-7" />
           </div>
           <div>
-            <p className="text-gray-600 text-sm font-medium">Media Coverage</p>
-            <p className="text-4xl font-bold">1,294</p>
+            <p>Total Projects</p>
+            <p className="text-4xl font-bold">40</p>
           </div>
         </div>
       </Card>
 
-      <Card className="col-span-12 md:col-span-4 rounded-xl hover:shadow-xl transition-all duration-300">
-        <div className="p-5 flex items-center gap-4">
-          <div className="p-3 rounded-xl bg-pink-600 text-white shadow-md">
-            <User2 className="w-7 h-7" />
+      <Card className="col-span-3 p-5">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-pink-600 text-white rounded-xl">
+            <TbAlertCircle className="w-7 h-7" />
           </div>
           <div>
-            <p className="text-gray-600 text-sm font-medium">Total Users</p>
-            <p className="text-4xl font-bold">3,820</p>
+            <p>Active Projects</p>
+            <p className="text-4xl font-bold">38</p>
           </div>
         </div>
       </Card>
 
-      <Card className="col-span-12 md:col-span-6">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Media Monitoring (By Category)</CardTitle>
-
-          <div className="flex gap-2">
-            <button
-              onClick={() => setViewMode("daily")}
-              className={`px-3 py-1 rounded-md text-sm ${
-                viewMode === "daily"
-                  ? "bg-indigo-600 text-white"
-                  : "bg-gray-200"
-              }`}
-            >
-              Daily
-            </button>
-            <button
-              onClick={() => setViewMode("weekly")}
-              className={`px-3 py-1 rounded-md text-sm ${
-                viewMode === "weekly"
-                  ? "bg-indigo-600 text-white"
-                  : "bg-gray-200"
-              }`}
-            >
-              Weekly
-            </button>
-            <button
-              onClick={() => setViewMode("monthly")}
-              className={`px-3 py-1 rounded-md text-sm ${
-                viewMode === "monthly"
-                  ? "bg-indigo-600 text-white"
-                  : "bg-gray-200"
-              }`}
-            >
-              Monthly
-            </button>
+      <Card className="col-span-3 p-5">
+        <div className="flex items-center gap-4">
+          <div className="p-3 bg-purple-600 text-white rounded-xl">
+            <CogIcon className="w-7 h-7" />
           </div>
-        </CardHeader>
-
-        <CardContent className="h-72">
-          <Bar data={monitoringChartData} options={monitoringChartOptions} />
-        </CardContent>
+          <div>
+            <p>Total Media Sources</p>
+            <p className="text-4xl font-bold">127</p>
+          </div>
+        </div>
       </Card>
 
-      <Card className="col-span-12 md:col-span-6">
-        <CardHeader>
-          <CardTitle>Leading Media Source Coverage</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <p className="font-medium text-gray-700">ITV (Television)</p>
-            <div className="w-full h-1 bg-gray-200 rounded-full mt-1">
-              <div
-                className="h-1 bg-indigo-600 rounded-full"
-                style={{ width: "85%" }}
-              ></div>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">85% coverage</p>
-          </div>
+      {/* LEFT SIDE (equal height cards) */}
+      <div className="col-span-8 flex flex-col gap-6 h-full">
+        <Card className="flex-1">
+          <CardHeader>
+            <CardTitle>Media Source Coverage</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {[
+              {
+                name: "Television",
+                pct: 85,
+                color: "bg-indigo-600",
+                count: 35,
+              },
+              { name: "Newspapers", pct: 78, color: "bg-green-600", count: 41 },
+              {
+                name: "Radio Stations",
+                pct: 92,
+                color: "bg-pink-600",
+                count: 28,
+              },
+              {
+                name: "Social Media",
+                pct: 67,
+                color: "bg-yellow-500",
+                count: 22,
+              },
+              {
+                name: "Other Media",
+                pct: 60,
+                color: "bg-blue-500",
+                count: 9,
+              },
+            ].map((item) => (
+              <div key={item.name}>
+                <div className="flex justify-between text-sm">
+                  <span>{item.name}</span>
+                  <span>{item.count} sources</span>
+                </div>
+                <div className="bg-gray-200 h-1 rounded-full mt-1">
+                  <div
+                    className={`${item.color} h-1 rounded-full`}
+                    style={{ width: `${item.pct}%` }}
+                  ></div>
+                </div>
+                <p className="text-xs text-gray-600">{item.pct}% coverage</p>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
 
-          <div>
-            <p className="font-medium text-gray-700">The Citizen (Newspaper)</p>
-            <div className="w-full h-1 bg-gray-200 rounded-full mt-1">
-              <div
-                className="h-1 bg-emerald-600 rounded-full"
-                style={{ width: "78%" }}
-              ></div>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">78% coverage</p>
-          </div>
-
-          <div>
-            <p className="font-medium text-gray-700">Clouds FM (Radio)</p>
-            <div className="w-full h-1 bg-gray-200 rounded-full mt-1">
-              <div
-                className="h-1 bg-pink-600 rounded-full"
-                style={{ width: "92%" }}
-              ></div>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">92% coverage</p>
-          </div>
-
-          <div>
-            <p className="font-medium text-gray-700">
-              Millard Ayo (Social Media)
-            </p>
-            <div className="w-full h-1 bg-gray-200 rounded-full mt-1">
-              <div
-                className="h-1 bg-yellow-500 rounded-full"
-                style={{ width: "67%" }}
-              ></div>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">67% coverage</p>
-          </div>
-
-          <div>
-            <p className="font-medium text-gray-700">TBC (Broadcast)</p>
-            <div className="w-full h-1 bg-gray-200 rounded-full mt-1">
-              <div
-                className="h-1 bg-blue-600 rounded-full"
-                style={{ width: "74%" }}
-              ></div>
-            </div>
-            <p className="text-xs text-gray-500 mt-1">74% coverage</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="col-span-12 md:col-span-6">
-        <CardHeader>
-          <CardTitle>Media Coverage Breakdown</CardTitle>
-        </CardHeader>
-        <CardContent className="h-80">
-          <Pie data={outletPieData} />
-        </CardContent>
-      </Card>
-
-      <Card className="col-span-12 md:col-span-6">
-        <CardHeader>
-          <CardTitle>Upcoming Media Reports</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Media Type</TableHead>
-                <TableHead>Title</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {upcomingNews.map((item, i) => (
-                <TableRow key={i}>
-                  <TableCell>{item.type}</TableCell>
-                  <TableCell>{item.title}</TableCell>
-                  <TableCell>
-                    <span
-                      className={`px-3 py-1 rounded-full text-white text-sm ${
-                        item.status === "Pending"
-                          ? "bg-yellow-500"
-                          : item.status === "In Progress"
-                          ? "bg-blue-500"
-                          : "bg-green-600"
-                      }`}
-                    >
-                      {item.status}
-                    </span>
-                  </TableCell>
-                </TableRow>
+        <Card className="flex-1">
+          <CardHeader className="flex justify-between items-center">
+            <CardTitle>Media Monitoring (By Category)</CardTitle>
+            <div className="flex gap-2">
+              {["daily", "weekly", "monthly"].map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setViewMode(m)}
+                  className={`px-3 py-1 rounded-md text-sm ${
+                    viewMode === m ? "bg-indigo-600 text-white" : "bg-gray-200"
+                  }`}
+                >
+                  {m}
+                </button>
               ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+            </div>
+          </CardHeader>
+          <CardContent className="h-80">
+            <Bar data={monitoringData} options={monitoringOptions} />
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* RIGHT SIDE (equal height cards) */}
+      <div className="col-span-4 flex flex-col gap-6 h-full">
+        <Card className="flex-1">
+          <CardHeader>
+            <CardTitle>Recent Reports</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {reports.map((a) => (
+              <div
+                key={a.tag}
+                className="flex items-center gap-3 p-3 bg-orange-50 rounded-md"
+              >
+                <span
+                  className={`${a.color} px-3 py-1 text-white rounded-full text-sm`}
+                >
+                  {a.tag}
+                </span>
+                <span>{a.text}</span>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        <Card className="flex-1">
+          <CardHeader>
+            <CardTitle>Total Reports</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="flex justify-between">
+              <span className="bg-green-500 px-3 py-1 text-sm rounded-full text-white">
+                Verified
+              </span>
+              <span>3456</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="bg-indigo-500 px-3 py-1 text-sm rounded-full text-white">
+                Approval
+              </span>
+              <span>122</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="bg-yellow-500 px-3 py-1 text-sm rounded-full text-white">
+                Pending
+              </span>
+              <span>122</span>
+            </div>
+
+            <div className="flex justify-between">
+              <span className="bg-red-500 px-3 py-1 text-sm rounded-full text-white">
+                Rejected
+              </span>
+              <span>22</span>
+            </div>
+
+            <div className="flex justify-between border-t pt-2">
+              <span className="font-bold">Total</span>
+              <span className="font-bold">3600</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
