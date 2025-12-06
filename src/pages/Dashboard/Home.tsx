@@ -17,9 +17,11 @@ import {
   ChartOptions,
 } from "chart.js";
 
-import { Bar } from "react-chartjs-2";
-import { TbSourceCode, TbWalk, TbAlertCircle } from "react-icons/tb";
-import { CogIcon } from "lucide-react";
+import { Bar, Pie } from "react-chartjs-2";
+import { IoRadioSharp } from "react-icons/io5";
+import { FaUsers } from "react-icons/fa";
+import { GoProjectSymlink } from "react-icons/go";
+import { GrProjects } from "react-icons/gr";
 import { useState } from "react";
 
 ChartJS.register(
@@ -72,14 +74,30 @@ export default function Home() {
       {
         label: "Print Media",
         data: selected.print,
-        backgroundColor: "#4F46E5",
+        backgroundColor: "#66308d",
+        barPercentage: 0.45,
+        categoryPercentage: 0.6,
       },
-      { label: "TV", data: selected.tv, backgroundColor: "#10B981" },
-      { label: "Radio", data: selected.radio, backgroundColor: "#F59E0B" },
+      {
+        label: "TV",
+        data: selected.tv,
+        backgroundColor: "#2aa6af",
+        barPercentage: 0.45,
+        categoryPercentage: 0.6,
+      },
+      {
+        label: "Radio",
+        data: selected.radio,
+        backgroundColor: "#F59E0B",
+        barPercentage: 0.45,
+        categoryPercentage: 0.6,
+      },
       {
         label: "Social Media",
         data: selected.social,
         backgroundColor: "#EC4899",
+        barPercentage: 0.45,
+        categoryPercentage: 0.6,
       },
     ],
   };
@@ -92,10 +110,18 @@ export default function Home() {
   };
 
   const reports = [
-    { tag: "Tawla", text: "Report date 12/10/2025", color: "bg-red-500" },
-    { tag: "WFC", text: "Report date 1/10/2026", color: "bg-green-500" },
-    { tag: "LHRC", text: "Report date 13/11/2025", color: "bg-blue-500" },
-    { tag: "LHRC", text: "Report date 13/11/2025", color: "bg-blue-500" },
+    { tag: "Tawla", text: "12/10/2025", color: "bg-red-500" },
+    { tag: "WFC", text: "1/10/2026", color: "bg-green-500" },
+    { tag: "LHRC", text: "13/11/2025", color: "bg-blue-500" },
+    { tag: "LHRC", text: "13/11/2025", color: "bg-blue-500" },
+  ];
+
+  const coverageData = [
+    { name: "Television", pct: 85, color: "bg-[#2aa6af]", count: 35 },
+    { name: "Newspapers", pct: 78, color: "bg-[#66308d]", count: 41 },
+    { name: "Radio Stations", pct: 92, color: "bg-[#F59E0B]", count: 28 },
+    { name: "Social Media", pct: 67, color: "bg-[#EC4899]", count: 22 },
+    { name: "Other Media", pct: 60, color: "bg-blue-500", count: 9 },
   ];
 
   return (
@@ -103,7 +129,7 @@ export default function Home() {
       <Card className="col-span-3 p-5">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-indigo-600 text-white rounded-xl">
-            <TbSourceCode className="w-7 h-7" />
+            <FaUsers className="w-7 h-7" />
           </div>
           <div>
             <p>Total Clients</p>
@@ -115,7 +141,7 @@ export default function Home() {
       <Card className="col-span-3 p-5">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-green-600 text-white rounded-xl">
-            <TbWalk className="w-7 h-7" />
+            <GrProjects className="w-7 h-7" />
           </div>
           <div>
             <p>Total Projects</p>
@@ -127,7 +153,7 @@ export default function Home() {
       <Card className="col-span-3 p-5">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-pink-600 text-white rounded-xl">
-            <TbAlertCircle className="w-7 h-7" />
+            <GoProjectSymlink className="w-7 h-7" />
           </div>
           <div>
             <p>Active Projects</p>
@@ -139,7 +165,7 @@ export default function Home() {
       <Card className="col-span-3 p-5">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-purple-600 text-white rounded-xl">
-            <CogIcon className="w-7 h-7" />
+            <IoRadioSharp className="w-7 h-7" />
           </div>
           <div>
             <p>Total Media Sources</p>
@@ -148,60 +174,38 @@ export default function Home() {
         </div>
       </Card>
 
-      {/* LEFT SIDE (equal height cards) */}
+      {/* LEFT SIDE */}
       <div className="col-span-8 flex flex-col gap-6 h-full">
         <Card className="flex-1">
           <CardHeader>
             <CardTitle>Media Source Coverage</CardTitle>
           </CardHeader>
+
           <CardContent className="space-y-4">
-            {[
-              {
-                name: "Television",
-                pct: 85,
-                color: "bg-indigo-600",
-                count: 35,
-              },
-              { name: "Newspapers", pct: 78, color: "bg-green-600", count: 41 },
-              {
-                name: "Radio Stations",
-                pct: 92,
-                color: "bg-pink-600",
-                count: 28,
-              },
-              {
-                name: "Social Media",
-                pct: 67,
-                color: "bg-yellow-500",
-                count: 22,
-              },
-              {
-                name: "Other Media",
-                pct: 60,
-                color: "bg-blue-500",
-                count: 9,
-              },
-            ].map((item) => (
+            {coverageData.map((item) => (
               <div key={item.name}>
                 <div className="flex justify-between text-sm">
                   <span>{item.name}</span>
                   <span>{item.count} sources</span>
                 </div>
+
                 <div className="bg-gray-200 h-1 rounded-full mt-1">
                   <div
                     className={`${item.color} h-1 rounded-full`}
                     style={{ width: `${item.pct}%` }}
                   ></div>
                 </div>
+
                 <p className="text-xs text-gray-600">{item.pct}% coverage</p>
               </div>
             ))}
           </CardContent>
         </Card>
 
-        <Card className="flex-1">
+        <Card className="flex-1 relative top-7">
           <CardHeader className="flex justify-between items-center">
             <CardTitle>Media Monitoring (By Category)</CardTitle>
+
             <div className="flex gap-2">
               {["daily", "weekly", "monthly"].map((m) => (
                 <button
@@ -216,23 +220,25 @@ export default function Home() {
               ))}
             </div>
           </CardHeader>
+
           <CardContent className="h-80">
             <Bar data={monitoringData} options={monitoringOptions} />
           </CardContent>
         </Card>
       </div>
 
-      {/* RIGHT SIDE (equal height cards) */}
+      {/* RIGHT SIDE */}
       <div className="col-span-4 flex flex-col gap-6 h-full">
         <Card className="flex-1">
           <CardHeader>
             <CardTitle>Recent Reports</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
+
+          <CardContent>
             {reports.map((a) => (
               <div
                 key={a.tag}
-                className="flex items-center gap-3 p-3 bg-orange-50 rounded-md"
+                className="flex items-center justify-between my-2 p-3 bg-orange-50 rounded-md"
               >
                 <span
                   className={`${a.color} px-3 py-1 text-white rounded-full text-sm`}
@@ -245,43 +251,37 @@ export default function Home() {
           </CardContent>
         </Card>
 
-        <Card className="flex-1">
+        <Card className="flex-1 mt-6">
           <CardHeader>
-            <CardTitle>Total Reports</CardTitle>
+            <CardTitle>Total Reports Status</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <div className="flex justify-between">
-              <span className="bg-green-500 px-3 py-1 text-sm rounded-full text-white">
-                Verified
-              </span>
-              <span>3456</span>
-            </div>
 
-            <div className="flex justify-between">
-              <span className="bg-indigo-500 px-3 py-1 text-sm rounded-full text-white">
-                Approval
-              </span>
-              <span>122</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="bg-yellow-500 px-3 py-1 text-sm rounded-full text-white">
-                Pending
-              </span>
-              <span>122</span>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="bg-red-500 px-3 py-1 text-sm rounded-full text-white">
-                Rejected
-              </span>
-              <span>22</span>
-            </div>
-
-            <div className="flex justify-between border-t pt-2">
-              <span className="font-bold">Total</span>
-              <span className="font-bold">3600</span>
-            </div>
+          <CardContent className="flex justify-center items-center h-64">
+            <Pie
+              data={{
+                labels: ["Verified", "Approval", "Pending", "Rejected"],
+                datasets: [
+                  {
+                    data: [3456, 122, 122, 22],
+                    backgroundColor: [
+                      "#10B981", // Green
+                      "#6366F1", // Indigo
+                      "#FBBF24", // Yellow
+                      "#EF4444", // Red
+                    ],
+                    borderWidth: 0,
+                  },
+                ],
+              }}
+              options={{
+                responsive: true,
+                plugins: {
+                  legend: {
+                    position: "bottom",
+                  },
+                },
+              }}
+            />
           </CardContent>
         </Card>
       </div>
