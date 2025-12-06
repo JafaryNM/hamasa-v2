@@ -18,8 +18,8 @@ import {
 } from "chart.js";
 
 import { Bar } from "react-chartjs-2";
-import { TbSourceCode, TbABOff, TbWalk, TbAlertCircle } from "react-icons/tb";
-import { CogIcon, User2 } from "lucide-react";
+import { TbSourceCode, TbWalk, TbAlertCircle } from "react-icons/tb";
+import { CogIcon } from "lucide-react";
 import { useState } from "react";
 
 ChartJS.register(
