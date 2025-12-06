@@ -10,6 +10,9 @@ import Clients from "./pages/ClientPage/Clients";
 import ProjectCategories from "./pages/ProjectCategories/ProjectCategories";
 import Media from "./pages/MediasPage/Media";
 import Project from "./pages/ProjectPages/Project";
+import ProjectCreate from "./pages/ProjectPages/ProjectCreate";
+import ProjectDetails from "./pages/ProjectPages/ProjectDetails";
+import ProjectEdit from "./pages/ProjectPages/ProjectEdit";
 
 export default function App() {
   return (
@@ -22,6 +25,17 @@ export default function App() {
             <Route element={<AppLayout />}>
               <Route index path="/" element={<Home />} />
               <Route index path="/projects" element={<Project />} />
+              <Route index path="/projects/:id" element={<ProjectDetails />} />
+              <Route
+                index
+                path="/projects/:id/edit"
+                element={<ProjectEdit />}
+              />
+              <Route
+                index
+                path="/projects/create"
+                element={<ProjectCreate />}
+              />
               <Route
                 index
                 path="/system/system-clients"
