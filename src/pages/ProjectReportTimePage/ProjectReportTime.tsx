@@ -1,0 +1,304 @@
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { Button } from "../../components/ui/button";
+import { toast } from "sonner";
+import { Input } from "../../components/ui/input";
+import { TbPencil, TbPlus, TbSearch, TbTrash } from "react-icons/tb";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../../components/ui/form";
+import { Card } from "../../components/ui/card";
+import { DataTable } from "../../components/common/Datatable";
+import { ProjectReportAvenueData, ProjectReportTimeData } from "../../types";
+
+import {
+  useAddProjectReportTime,
+  useDeleteProjectReportTime,
+  useProjectReportTimes,
+  useUpdateProjectReportTime,
+} from "../../hooks/useProjectReportTime";
+import {
+  ProjectReportTimeSchema,
+  ProjectReportTimeType,
+} from "../../Schema/ProjectReportTimeSchema";
+
+export default function ProjectReportTime() {
+  const [page, setPage] = useState(1);
+  const [nameInput, setNameInput] = useState("");
+  const [nameFilter, setNameFilter] = useState("");
+
+  const { data, isLoading } = useProjectReportTimes({
+    page,
+    page_size: 10,
+    name: nameFilter || null,
+    country: null,
+    sort: "desc",
+  });
+
+  const addProjectReportTime = useAddProjectReportTime();
+  const updateProjectReportTime = useUpdateProjectReportTime();
+  const deleteProjectReportTime = useDeleteProjectReportTime();
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingRecord, setEditingRecord] =
+    useState<ProjectReportTimeData | null>(null);
+
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [recordToDelete, setRecordToDelete] =
+    useState<ProjectReportAvenueData | null>(null);
+
+  const form = useForm<ProjectReportTimeType>({
+    resolver: zodResolver(ProjectReportTimeSchema),
+    defaultValues: { name: "" },
+  });
+
+  const { handleSubmit, control, reset } = form;
+
+  const fields =
+    data?.results?.map((fields: ProjectReportTimeData, index: number) => ({
+      ...fields,
+      sn: index + 1 + (page - 1) * 10,
+    })) || [];
+
+  const applySearch = () => {
+    setNameFilter(nameInput);
+    setPage(1);
+  };
+
+  const openCreateModal = () => {
+    reset({ name: "" });
+    setEditingRecord(null);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (record: ProjectReportTimeData) => {
+    reset({ name: record.name || "" });
+    setEditingRecord(record);
+    setIsModalOpen(true);
+  };
+
+  const confirmDelete = (record: ProjectReportTimeData) => {
+    setRecordToDelete(record);
+    setIsDeleteOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    if (!recordToDelete?.id) return;
+
+    deleteProjectReportTime.mutate(recordToDelete.id, {
+      onSuccess: () => {
+        toast.success("Project report time deleted successfully");
+        setIsDeleteOpen(false);
+      },
+      onError: (err: any) => {
+        toast.error(
+          err?.response?.data?.detail ||
+            "Failed to delete project report time category"
+        );
+      },
+    });
+  };
+
+  const onSubmit = (values: ProjectReportTimeType) => {
+    if (editingRecord) {
+      updateProjectReportTime.mutate(
+        { id: editingRecord.id!, data: values },
+        {
+          onSuccess: () => {
+            toast.success("Project report time updated successfully");
+            setIsModalOpen(false);
+          },
+          onError: (err: any) =>
+            toast.error(
+              err?.response?.data?.detail ||
+                "Failed to update project report time"
+            ),
+        }
+      );
+    } else {
+      addProjectReportTime.mutate(values, {
+        onSuccess: () => {
+          toast.success("Project report time created successfully");
+          setIsModalOpen(false);
+        },
+        onError: (err: any) =>
+          toast.error(
+            err?.response?.data?.detail ||
+              "Failed to create project report time"
+          ),
+      });
+    }
+  };
+
+  const columns = [
+    { accessorKey: "sn", header: "S/N" },
+    { accessorKey: "name", header: "Name" },
+
+    {
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }: any) => {
+        const record = row.original;
+
+        return (
+          <div className="flex gap-3">
+            <TbPencil
+              className="cursor-pointer text-blue-500"
+              onClick={() => openEditModal(record)}
+            />
+            <TbTrash
+              className="cursor-pointer text-red-500"
+              onClick={() => confirmDelete(record)}
+            />
+          </div>
+        );
+      },
+    },
+  ];
+
+  return (
+    <>
+      <Card className="p-6 space-y-6">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold">All Project Report Times</h2>
+          <Button onClick={openCreateModal}>
+            <TbPlus className="mr-2" /> Add Project Report Time
+          </Button>
+        </div>
+
+        <div className="flex gap-3 max-w-md">
+          <Input
+            placeholder="Search name..."
+            value={nameInput}
+            onChange={(e) => {
+              setNameInput(e.target.value);
+              if (e.target.value.trim() === "") {
+                setNameFilter("");
+                setPage(1);
+              }
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                applySearch();
+              }
+            }}
+          />
+
+          <Button variant="secondary" onClick={applySearch}>
+            <TbSearch className="mr-2" /> Search
+          </Button>
+        </div>
+
+        <DataTable
+          columns={columns}
+          data={fields}
+          isLoading={isLoading}
+          page={page}
+          pageSize={10}
+          total={data?.count ?? 0}
+          onPageChange={(p) => setPage(p)}
+        />
+
+        <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+          <DialogContent className="max-w-lg max-h-[75vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>
+                {editingRecord
+                  ? "Update Project Category"
+                  : "Create Project Category"}
+              </DialogTitle>
+            </DialogHeader>
+
+            <Form {...form}>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div className="grid grid-cols-1 gap-4">
+                  <FormField
+                    control={control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <DialogFooter>
+                  <Button
+                    type="submit"
+                    disabled={
+                      addProjectReportTime.isPending ||
+                      updateProjectReportTime.isPending
+                    }
+                  >
+                    {addProjectReportTime.isPending ||
+                    updateProjectReportTime.isPending ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {editingRecord ? "Updating..." : "Creating..."}
+                      </>
+                    ) : editingRecord ? (
+                      "Update"
+                    ) : (
+                      "Create"
+                    )}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle>Confirm Delete</DialogTitle>
+            </DialogHeader>
+
+            <p className="text-gray-600">
+              Are you sure you want to delete{" "}
+              <strong>{recordToDelete?.name}</strong>?
+            </p>
+
+            <DialogFooter>
+              <Button
+                variant="secondary"
+                onClick={() => setIsDeleteOpen(false)}
+                disabled={deleteProjectReportTime.isPending}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                variant="destructive"
+                onClick={handleConfirmDelete}
+                disabled={deleteProjectReportTime.isPending}
+              >
+                {deleteProjectReportTime.isPending ? "Deleting..." : "Delete"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </Card>
+    </>
+  );
+}
