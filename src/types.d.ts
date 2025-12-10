@@ -166,3 +166,9 @@ export interface ProjectReportTimeData {
   id: string;
   name: string;
 }
+
+// PROJECT REPORT CONSULTATION
+export interface ProjectReportConsultationData {
+  id: string;
+  name: string;
+}

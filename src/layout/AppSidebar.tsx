@@ -59,14 +59,20 @@ const othersItems: NavItem[] = [
       },
 
       {
-        name: "Project Report Avenue",
+        name: "Report Avenues",
         path: "/system/system-project-report-avenue",
         pro: false,
       },
 
       {
-        name: "Project Report Time",
+        name: " Report Times",
         path: "/system/system-project-report-time",
+        pro: false,
+      },
+
+      {
+        name: " Report Consultations",
+        path: "/system/system-project-report-consultations",
         pro: false,
       },
 
