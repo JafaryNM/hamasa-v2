@@ -81,6 +81,9 @@ export interface ProjectType {
   title: string;
   description: string;
   client_id: string;
+  client_name: string;
+  total_media_sources: number;
+  total_thematic_areas: number;
 
   categories: Category[];
   collaborators: Collaborator[];
@@ -138,4 +141,16 @@ export interface ReportTime {
 export interface ReportConsultation {
   id: string;
   name: string;
+}
+
+// PROJECT PROCESS
+export interface ProjectProgress {
+  id: string;
+  stage_no: number;
+  owner_id: string;
+  previous_status: "draft" | "active" | "completed" | string;
+  current_status: "draft" | "active" | "completed" | string;
+  action: string;
+  comment: string;
+  created_at: string; // ISO date
 }

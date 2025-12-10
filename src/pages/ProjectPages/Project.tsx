@@ -88,10 +88,12 @@ export default function Project() {
     },
 
     {
-      accessorKey: "client_id",
+      accessorKey: "client_name",
       header: "Client",
       cell: ({ row }: any) => (
-        <span className="text-gray-700">{row.original.client_id || "N/A"}</span>
+        <span className="text-gray-700">
+          {row.original.client_name || "N/A"}
+        </span>
       ),
     },
 
@@ -100,7 +102,17 @@ export default function Project() {
       header: "Media Sources",
       cell: ({ row }: any) => (
         <span className="flex justify-center items-center">
-          {row.original.media_sources.length}
+          {row.original.total_media_sources}
+        </span>
+      ),
+    },
+
+    {
+      accessorKey: "thematic_areas",
+      header: "Media Sources",
+      cell: ({ row }: any) => (
+        <span className="flex justify-center items-center">
+          {row.original.total_thematic_areas}
         </span>
       ),
     },
