@@ -81,6 +81,9 @@ export interface ProjectType {
   title: string;
   description: string;
   client_id: string;
+  client_name: string;
+  total_media_sources: number;
+  total_thematic_areas: number;
 
   categories: Category[];
   collaborators: Collaborator[];

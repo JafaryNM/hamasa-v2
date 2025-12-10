@@ -47,9 +47,6 @@ export default function ProjectDetails() {
     inactive: "bg-gray-100 text-gray-700 border border-gray-400",
   };
 
-  // -------------------------------
-  // PROJECT STAGES — Using DataTable
-  // -------------------------------
   const stageData = [
     {
       stage: "Setup",
@@ -135,8 +132,8 @@ export default function ProjectDetails() {
             {project.status.toUpperCase()}
           </Badge>
 
-          <div className="flex items-center gap-2 text-gray-600 text-sm">
-            <TbUsers /> {project.client_id || "Unknown Client"}
+          <div className="flex items-center gap-2 text-brand-600 text-sm">
+            <TbUsers /> {project.client_name || "Unknown Client"}
           </div>
         </div>
 
