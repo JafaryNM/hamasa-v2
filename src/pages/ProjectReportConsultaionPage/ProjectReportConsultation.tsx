@@ -23,26 +23,25 @@ import {
 } from "../../components/ui/form";
 import { Card } from "../../components/ui/card";
 import { DataTable } from "../../components/common/Datatable";
-import { ProjectReportAvenueData } from "../../types";
+import { ProjectReportConsultationData } from "../../types";
 
 import {
-  ProjectCategorySchema,
-  ProjectCategoryType,
-} from "../../Schema/ProjectCategorySchema";
+  useAddProjectReportConsultation,
+  useDeleteProjectReportConsultation,
+  useProjectReportConsultations,
+  useUpdateProjectReportConsultation,
+} from "../../hooks/useProjectReportConsultation";
 import {
-  useAddProjectReportAvenue,
-  useDeleteProjectReportAvenue,
-  useProjectReportAvenues,
-  useUpdateProjectReportAvenue,
-} from "../../hooks/useProjectReportAvenue";
-import { ProjectReportAvenueType } from "../../Schema/ProjectReportAvenueSchema";
+  ProjectReportConsultationSchema,
+  ProjectReportConsultationType,
+} from "../../Schema/ProjectReportConsultationSchema";
 
-export default function ProjectReportAvenue() {
+export default function ProjectReportConsultation() {
   const [page, setPage] = useState(1);
   const [nameInput, setNameInput] = useState("");
   const [nameFilter, setNameFilter] = useState("");
 
-  const { data, isLoading } = useProjectReportAvenues({
+  const { data, isLoading } = useProjectReportConsultations({
     page,
     page_size: 10,
     name: nameFilter || null,
@@ -50,30 +49,32 @@ export default function ProjectReportAvenue() {
     sort: "desc",
   });
 
-  const addProjectReportAvenue = useAddProjectReportAvenue();
-  const updateProjectReportAvenue = useUpdateProjectReportAvenue();
-  const deleteProjectReportAvenue = useDeleteProjectReportAvenue();
+  const addProjectReportConsultation = useAddProjectReportConsultation();
+  const updateProjectReportConsultation = useUpdateProjectReportConsultation();
+  const deleteProjectReportConsultation = useDeleteProjectReportConsultation();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRecord, setEditingRecord] =
-    useState<ProjectReportAvenueData | null>(null);
+    useState<ProjectReportConsultationData | null>(null);
 
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [recordToDelete, setRecordToDelete] =
-    useState<ProjectReportAvenueData | null>(null);
+    useState<ProjectReportConsultationData | null>(null);
 
-  const form = useForm<ProjectCategoryType>({
-    resolver: zodResolver(ProjectCategorySchema),
-    defaultValues: { name: "", description: "" },
+  const form = useForm<ProjectReportConsultationType>({
+    resolver: zodResolver(ProjectReportConsultationSchema),
+    defaultValues: { name: "" },
   });
 
   const { handleSubmit, control, reset } = form;
 
   const fields =
-    data?.results?.map((fields: ProjectReportAvenueData, index: number) => ({
-      ...fields,
-      sn: index + 1 + (page - 1) * 10,
-    })) || [];
+    data?.results?.map(
+      (fields: ProjectReportConsultationData, index: number) => ({
+        ...fields,
+        sn: index + 1 + (page - 1) * 10,
+      })
+    ) || [];
 
   const applySearch = () => {
     setNameFilter(nameInput);
@@ -81,18 +82,18 @@ export default function ProjectReportAvenue() {
   };
 
   const openCreateModal = () => {
-    reset({ name: "", description: "" });
+    reset({ name: "" });
     setEditingRecord(null);
     setIsModalOpen(true);
   };
 
-  const openEditModal = (record: ProjectReportAvenueData) => {
+  const openEditModal = (record: ProjectReportConsultationData) => {
     reset({ name: record.name || "" });
     setEditingRecord(record);
     setIsModalOpen(true);
   };
 
-  const confirmDelete = (record: ProjectReportAvenueData) => {
+  const confirmDelete = (record: ProjectReportConsultationData) => {
     setRecordToDelete(record);
     setIsDeleteOpen(true);
   };
@@ -100,45 +101,46 @@ export default function ProjectReportAvenue() {
   const handleConfirmDelete = () => {
     if (!recordToDelete?.id) return;
 
-    deleteProjectReportAvenue.mutate(recordToDelete.id, {
+    deleteProjectReportConsultation.mutate(recordToDelete.id, {
       onSuccess: () => {
-        toast.success("Project report avenue deleted successfully");
+        toast.success("Project report consultation deleted successfully");
         setIsDeleteOpen(false);
       },
       onError: (err: any) => {
         toast.error(
           err?.response?.data?.detail ||
-            "Failed to delete project report avenue category"
+            "Failed to delete project report consultation"
         );
       },
     });
   };
 
-  const onSubmit = (values: ProjectReportAvenueType) => {
+  const onSubmit = (values: ProjectReportConsultationType) => {
     if (editingRecord) {
-      updateProjectReportAvenue.mutate(
+      updateProjectReportConsultation.mutate(
         { id: editingRecord.id!, data: values },
         {
           onSuccess: () => {
-            toast.success("Project report avenue updated successfully");
+            toast.success("Project report consultation updated successfully");
             setIsModalOpen(false);
           },
           onError: (err: any) =>
             toast.error(
               err?.response?.data?.detail ||
-                "Failed to update project report avenue"
+                "Failed to update project report consultation"
             ),
         }
       );
     } else {
-      addProjectReportAvenue.mutate(values, {
+      addProjectReportConsultation.mutate(values, {
         onSuccess: () => {
-          toast.success("Project category created successfully");
+          toast.success("Project report consultation created successfully");
           setIsModalOpen(false);
         },
         onError: (err: any) =>
           toast.error(
-            err?.response?.data?.detail || "Failed to create project category"
+            err?.response?.data?.detail ||
+              "Failed to create project report consultation"
           ),
       });
     }
@@ -174,9 +176,11 @@ export default function ProjectReportAvenue() {
     <>
       <Card className="p-6 space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold">All Project Report Avenues</h2>
+          <h2 className="text-xl font-semibold">
+            All Project Report Consultation
+          </h2>
           <Button onClick={openCreateModal}>
-            <TbPlus className="mr-2" /> Add Project Report Avenue
+            <TbPlus className="mr-2" /> Add Project Report Consultation
           </Button>
         </div>
 
@@ -219,8 +223,8 @@ export default function ProjectReportAvenue() {
             <DialogHeader>
               <DialogTitle>
                 {editingRecord
-                  ? "Update Project Report Avenue"
-                  : "Create Project Report Avenue"}
+                  ? "Update Project Consultation"
+                  : "Create Project Consultation"}
               </DialogTitle>
             </DialogHeader>
 
@@ -246,12 +250,12 @@ export default function ProjectReportAvenue() {
                   <Button
                     type="submit"
                     disabled={
-                      addProjectReportAvenue.isPending ||
-                      updateProjectReportAvenue.isPending
+                      addProjectReportConsultation.isPending ||
+                      updateProjectReportConsultation.isPending
                     }
                   >
-                    {addProjectReportAvenue.isPending ||
-                    updateProjectReportAvenue.isPending ? (
+                    {addProjectReportConsultation.isPending ||
+                    updateProjectReportConsultation.isPending ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         {editingRecord ? "Updating..." : "Creating..."}
@@ -283,7 +287,7 @@ export default function ProjectReportAvenue() {
               <Button
                 variant="secondary"
                 onClick={() => setIsDeleteOpen(false)}
-                disabled={deleteProjectReportAvenue.isPending}
+                disabled={deleteProjectReportConsultation.isPending}
               >
                 Cancel
               </Button>
@@ -291,9 +295,11 @@ export default function ProjectReportAvenue() {
               <Button
                 variant="destructive"
                 onClick={handleConfirmDelete}
-                disabled={deleteProjectReportAvenue.isPending}
+                disabled={deleteProjectReportConsultation.isPending}
               >
-                {deleteProjectReportAvenue.isPending ? "Deleting..." : "Delete"}
+                {deleteProjectReportConsultation.isPending
+                  ? "Deleting..."
+                  : "Delete"}
               </Button>
             </DialogFooter>
           </DialogContent>

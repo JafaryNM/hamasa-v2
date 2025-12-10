@@ -219,8 +219,8 @@ export default function ProjectReportTime() {
             <DialogHeader>
               <DialogTitle>
                 {editingRecord
-                  ? "Update Project Category"
-                  : "Create Project Category"}
+                  ? "Update Project Report Time"
+                  : "Create Project Report Time"}
               </DialogTitle>
             </DialogHeader>
 

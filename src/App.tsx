@@ -15,6 +15,7 @@ import ProjectDetails from "./pages/ProjectPages/ProjectDetails";
 import ProjectEdit from "./pages/ProjectPages/ProjectEdit";
 import ProjectReportAvenue from "./pages/ProjectReportAvenuePage/ProjectReportAvenue";
 import ProjectReportTime from "./pages/ProjectReportTimePage/ProjectReportTime";
+import ProjectReportConsultation from "./pages/ProjectReportConsultaionPage/ProjectReportConsultation";
 
 export default function App() {
   return (
@@ -59,6 +60,11 @@ export default function App() {
                 index
                 path="/system/system-project-report-time"
                 element={<ProjectReportTime />}
+              />
+              <Route
+                index
+                path="/system/system-project-report-consultations"
+                element={<ProjectReportConsultation />}
               />
               <Route index path="/system/medias" element={<Media />} />
             </Route>
