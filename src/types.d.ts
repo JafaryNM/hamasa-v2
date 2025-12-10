@@ -154,3 +154,9 @@ export interface ProjectProgress {
   comment: string;
   created_at: string; // ISO date
 }
+
+// PROJECT REPORT AVENUE
+export interface ProjectReportAvenueData {
+  id: string;
+  name: string;
+}

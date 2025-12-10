@@ -13,6 +13,7 @@ import Project from "./pages/ProjectPages/Project";
 import ProjectCreate from "./pages/ProjectPages/ProjectCreate";
 import ProjectDetails from "./pages/ProjectPages/ProjectDetails";
 import ProjectEdit from "./pages/ProjectPages/ProjectEdit";
+import ProjectReportAvenue from "./pages/ProjectReportAvenuePage/ProjectReportAvenue";
 
 export default function App() {
   return (
@@ -45,6 +46,12 @@ export default function App() {
                 index
                 path="/system/system-project-categories"
                 element={<ProjectCategories />}
+              />
+
+              <Route
+                index
+                path="/system/system-project-report-avenue"
+                element={<ProjectReportAvenue />}
               />
               <Route index path="/system/medias" element={<Media />} />
             </Route>
