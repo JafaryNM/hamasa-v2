@@ -20,15 +20,17 @@ import {
   TbFolder,
   TbWorld,
   TbLayersIntersect,
-  TbChartBar,
 } from "react-icons/tb";
 
 import { CiPlay1 } from "react-icons/ci";
+import { useProjectProgress } from "../../hooks/useProjectProgress";
 
 export default function ProjectDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { data, isLoading } = useShowProject(id!);
+  const { data: progressData = [], isLoading: loadingProgress } =
+    useProjectProgress(id!);
 
   if (isLoading)
     return <div className="p-6 text-gray-600 text-lg">Loading project...</div>;
@@ -38,83 +40,66 @@ export default function ProjectDetails() {
 
   const project = data;
 
-  // -------------------------------
-  // STATUS STYLING
-  // -------------------------------
   const statusStyle: Record<string, string> = {
     active: "bg-green-100 text-green-700 border border-green-400",
     pending: "bg-yellow-100 text-yellow-700 border border-yellow-400",
     inactive: "bg-gray-100 text-gray-700 border border-gray-400",
   };
 
-  const stageData = [
+  const progressColumns: any = [
     {
-      stage: "Setup",
-      status: "Completed",
-      updated: "Feb 4, 2025",
-    },
-    {
-      stage: "Data Collection",
-      status: "In Progress",
-      updated: "Feb 11, 2025",
-    },
-    {
-      stage: "Analysis",
-      status: "Pending",
-      updated: "-",
-    },
-  ];
-
-  const stageColumns: any = [
-    {
-      accessorKey: "stage",
-      header: "Stage",
+      accessorKey: "stage_no",
+      header: "Stage No",
       cell: ({ row }: any) => (
-        <span className="font-medium text-gray-800">{row.original.stage}</span>
+        <span className="font-medium">{row.original.stage_no}</span>
       ),
     },
-    {
-      accessorKey: "status",
-      header: "Status",
-      cell: ({ row }: any) => {
-        const status = row.original.status;
 
-        const colorMap: Record<string, string> = {
-          Completed: "bg-green-100 text-green-700 border border-green-400",
-          "In Progress":
-            "bg-yellow-100 text-yellow-700 border border-yellow-400",
-          Pending: "bg-gray-200 text-gray-700 border border-gray-400",
+    {
+      accessorKey: "current_status",
+      header: "Current Status",
+      cell: ({ row }: any) => {
+        const status = row.original.current_status;
+
+        const statusColor: Record<string, string> = {
+          draft: "bg-gray-200 text-gray-700",
+          active: "bg-blue-200 text-blue-700",
+          completed: "bg-green-200 text-green-700",
         };
 
         return (
-          <Badge className={`${colorMap[status]} px-3 py-1 text-xs`}>
+          <Badge className={statusColor[status] || "bg-gray-200 text-gray-700"}>
             {status}
           </Badge>
         );
       },
     },
+
     {
-      accessorKey: "updated",
-      header: "Last Updated",
+      accessorKey: "comment",
+      header: "Comment",
       cell: ({ row }: any) => (
-        <span className="text-sm text-gray-600">{row.original.updated}</span>
+        <span className="text-gray-600">{row.original.comment || "-"}</span>
+      ),
+    },
+
+    {
+      accessorKey: "created_at",
+      header: "Created At",
+      cell: ({ row }: any) => (
+        <span className="text-sm text-gray-600">
+          {new Date(row.original.created_at).toLocaleString()}
+        </span>
       ),
     },
   ];
 
-  // -------------------------------
-  // RETURN UI
-  // -------------------------------
   return (
     <div className="p-6 space-y-6">
       {/* BACK + ACTIVATE BUTTON */}
       <div className="flex justify-between items-center">
         <Button variant="outline" onClick={() => navigate(-1)}>
           <TbArrowLeft size={18} /> Back to Projects
-        </Button>
-
-        <Button className="bg-brand-500 text-white flex items-center gap-2">
-          <CiPlay1 size={18} /> Activate Project
         </Button>
       </div>
 
@@ -263,18 +248,20 @@ export default function ProjectDetails() {
 
       {/* PROJECT STAGES - DATATABLE */}
       <Card className="p-6 shadow-sm">
-        <div className="flex items-center gap-2 mb-4">
-          <TbChartBar size={20} className="text-brand-500" />
+        <div className="flex justify-between items-center">
           <h2 className="font-semibold text-gray-800">Project Stages</h2>
+          <Button className="bg-brand-500 text-white flex items-center gap-2">
+            <CiPlay1 size={18} /> Activate Project
+          </Button>
         </div>
 
         <DataTable
-          columns={stageColumns}
-          data={stageData}
-          isLoading={false}
+          columns={progressColumns}
+          data={progressData}
+          isLoading={loadingProgress}
           page={1}
           pageSize={10}
-          total={stageData.length}
+          total={progressData.length}
           onPageChange={() => {}}
         />
       </Card>

@@ -142,3 +142,15 @@ export interface ReportConsultation {
   id: string;
   name: string;
 }
+
+// PROJECT PROCESS
+export interface ProjectProgress {
+  id: string;
+  stage_no: number;
+  owner_id: string;
+  previous_status: "draft" | "active" | "completed" | string;
+  current_status: "draft" | "active" | "completed" | string;
+  action: string;
+  comment: string;
+  created_at: string; // ISO date
+}
