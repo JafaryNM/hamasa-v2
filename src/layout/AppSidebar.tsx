@@ -65,6 +65,12 @@ const othersItems: NavItem[] = [
       },
 
       {
+        name: "Project Report Time",
+        path: "/system/system-project-report-time",
+        pro: false,
+      },
+
+      {
         name: "Media Sources",
         path: "/system/medias",
         pro: false,

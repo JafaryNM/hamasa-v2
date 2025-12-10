@@ -160,3 +160,9 @@ export interface ProjectReportAvenueData {
   id: string;
   name: string;
 }
+
+// PROJECT REPORT TIME
+export interface ProjectReportTimeData {
+  id: string;
+  name: string;
+}
